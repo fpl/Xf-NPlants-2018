@@ -22,7 +22,7 @@ if (!require("pROC")) { install.packages("pROC"); require("pROC") }  ### ROC AUC
 #########################
 # set workspace
 
-setwd ("choose a directory ...") # this is optional !!! 
+#setwd ("choose a directory ...") # this is optional !!! 
 path_data<-("data/")
 path_out<-("out/") ### choose a directory ...
 
@@ -137,8 +137,8 @@ for (k in c(1:3)){
   filterVarImp(dataset[,predictors],dataset[,'pred_svm']) ### from predictions
   
   ##Checking the accuracy of the model (confusionMatrix)
-  results_train_svm<-  confusionMatrix(dataset$SEV,dataset$pred_svm)
-  results_test_svm<-  confusionMatrix(dataset_test$SEV,dataset_test$pred_svm)
+  results_train_svm<-  confusionMatrix(table(dataset$SEV,dataset$pred_svm))
+  results_test_svm<-  confusionMatrix(table(dataset_test$SEV,dataset_test$pred_svm))
   
   #export results
   OA<-round(results_train_svm$overall['Accuracy'],4)*100
@@ -206,8 +206,8 @@ for (k in c(1:3)){
   filterVarImp(dataset[,predictors],dataset[,'pred_knn']) ### from predictions
   
   ##Checking the accuracy of the model (confusionMatrix)
-  results_train_nne<-  confusionMatrix(dataset$SEV,dataset$pred_knn)
-  results_test_nne<-  confusionMatrix(dataset_test$SEV,dataset_test$pred_knn)
+  results_train_nne<-  confusionMatrix(table(dataset$SEV,dataset$pred_knn))
+  results_test_nne<-  confusionMatrix(table(dataset_test$SEV,dataset_test$pred_knn))
   
   #export results
   OA<-round(results_train_nne$overall['Accuracy'],4)*100
@@ -262,8 +262,8 @@ for (k in c(1:3)){
   
   #######################
   #Checking the accuracy of the model (confusionMatrix)
-  results_train_lda<-confusionMatrix(dataset$SEV_2,dataset$pred_lda)
-  results_test_lda<-confusionMatrix(dataset_test$SEV_2,dataset_test$pred_lda)
+  results_train_lda<-confusionMatrix(table(dataset$SEV_2,dataset$pred_lda))
+  results_test_lda<-confusionMatrix(table(dataset_test$SEV_2,dataset_test$pred_lda))
   
   #export results
   OA<-round(results_train_lda$overall['Accuracy'],4)*100

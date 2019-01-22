@@ -22,7 +22,7 @@ if (!require("pROC")) { install.packages("pROC"); require("pROC") }  ### ROC AUC
 #########################
 # set workspace
 
-setwd ("choose a directory ...") ## this is optional !
+#setwd ("choose a directory ...") ## this is optional !
 path_data<-("data/")
 path_out<-("out/") ### choose a directory ...
 
@@ -51,6 +51,7 @@ names_to_include<-c("model PSFT")
 # 2. set statistical parameters -------------------------------------------------------
 
 set.seed(100)
+k = 1
 #fitControl <- trainControl(method = "cv",number = 10,savePredictions = 'final',classProbs = T)
 fitControl2 <- trainControl(method = "LOOCV",number = 10,savePredictions = 'final',classProbs = T,sampling = "down")
 fmla <- as.formula(paste("SEV ~ ", paste(Vector_to_include[[k]], collapse= "+")))
@@ -58,7 +59,7 @@ fmla <- as.formula(paste("SEV ~ ", paste(Vector_to_include[[k]], collapse= "+"))
 predictors<-Vector_to_include[[1]]
 outcomeName<-"SEV_2"
 
-  k=1
+#  k=1
   
   print(k)
   print(names_to_include[k])
@@ -100,7 +101,7 @@ vector_OA<-rep("NA",dim(outputs_pred)[2]-2)
 vector_kappa<-rep("NA",dim(outputs_pred)[2]-2)
 for (k in c(1:(dim(outputs_pred)[2]-2))){
   print(k)
-  results<-confusionMatrix(outputs_pred[,51],outputs_pred[,k])
+  results<-confusionMatrix(table(outputs_pred[,51],outputs_pred[,k]))
   OA<-as.numeric(round(results$overall['Accuracy'],5)*100)
   Kappa<-as.numeric(round(results$overall['Kappa'],5) )
   vector_OA
@@ -118,7 +119,7 @@ outputs_pred_prob<-data.frame(outputs_pred_prob,qPCR=data[,"qPCR"], GRID=data[,"
 pred_avg<-rowMeans(outputs_pred_prob[,1:n_cases])
 #Splitting into binary classes at 0.5
 pred_avg_class<-as.numeric(ifelse(pred_avg>0.5,'1','0'))
-results_avg<-confusionMatrix(outputs_pred[,51],pred_avg_class)
+results_avg<-confusionMatrix(table(outputs_pred[,51],pred_avg_class))
 OA_avg<-as.numeric(round(results_avg$overall['Accuracy'],5)*100)
 print(OA_avg)
 kappa_avg<-as.numeric(round(results_avg$overall['Kappa'],5) )
@@ -137,7 +138,7 @@ model_gbm<- train(outputs_pred_prob[,predictors_top],paste('C',outputs_pred_prob
 gbm_stacked<-predict(model_gbm,outputs_pred_prob[,predictors_top])
 gbm_stacked<-as.numeric(substr(gbm_stacked,2,2))
 
-results_gbm<-confusionMatrix(outputs_pred_prob[,51],gbm_stacked)
+results_gbm<-confusionMatrix(table(outputs_pred_prob[,51],gbm_stacked))
 
 OA_gbm<-as.numeric(round(results_gbm$overall['Accuracy'],5)*100)
 print(OA_gbm)
@@ -145,16 +146,15 @@ kappa_gbm<-as.numeric(round(results_gbm$overall['Kappa'],5) )
 print(kappa_gbm)
 outputs_pred_prob$gbm_stacked<-gbm_stacked
 
-
 # 5. confusion matrix (patologist visit) -------------------------------------------------------
 
 ####Patologist on June 2016 (data set 1)
-results<-confusionMatrix(outputs_pred[,51],data$SEV_A)
+results<-confusionMatrix(table(outputs_pred[,51],data$SEV_A))
 OA_jun<-as.numeric(round(results$overall['Accuracy'],5)*100)
 Kappa_jun<-as.numeric(round(results$overall['Kappa'],5) )
 ###Patologist on Feb 2016 (data set 1 and data set 2)
 ########################
-results_Feb<-confusionMatrix(outputs_pred[,51],data$Sympt_FEB_17)
+results_Feb<-confusionMatrix(table(outputs_pred[,51],data$Sympt_FEB_17))
 OA_feb<-as.numeric(round(results_Feb$overall['Accuracy'],5)*100)
 Kappa_feb<-as.numeric(round(results_Feb$overall['Kappa'],5) )
 
