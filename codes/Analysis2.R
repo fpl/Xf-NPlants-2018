@@ -252,7 +252,7 @@ for (k in c(1:3)){
   dataset_test$pred_lda<-predict(object = model_lda,dataset_test[,predictors])
   
   vector<-as.integer(substr(predict(object = model_lda,dataset[,predictors]),2,2))
-  outputs<-rbind(outputs,vector)
+  #outputs<-rbind(outputs,vector)
 
   ## ROC Analysis
   auc_train_lda<- roc(as.numeric(dataset[,"SEV"]), as.numeric(dataset$pred_lda))
